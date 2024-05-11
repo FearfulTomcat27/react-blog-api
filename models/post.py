@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.orm import relationship
-
+from models.tag import Tag
 from utils.database import Base
 
 class Post(Base):

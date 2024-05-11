@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, Query
 from sqlalchemy.orm import Session
 from typing import List
 from schemas import post as schemas
@@ -16,7 +16,6 @@ router = APIRouter()
 # 根据id查找文章
 @router.get('/posts/{post_id}', response_model=schemas.Post)
 def read_post(post_id: int, db: Session = Depends(get_db)):
-
     return crud.get_post(db, post_id)
 
 
@@ -32,7 +31,13 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @router.get('/posts', response_model=List[schemas.Post])
-def read_posts(db: Session = Depends(get_db)):
-    post = crud.get_posts(db)
-    print(post)
-    return post
+def read_posts(db: Session = Depends(get_db), content: str = Query(None)):
+    if(content):
+        return crud.get_posts_by_content(db, content)
+    else:
+        return crud.get_posts(db)
+
+
+@router.put('/posts')
+def update_post(db: Session = Depends(get_db), post: schemas.Post = Body(...)):
+    return crud.update_post(db, post)

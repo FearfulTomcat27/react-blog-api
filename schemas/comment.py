@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-
+from typing import Optional
 
 class Comment(BaseModel):
-    id: int
+    id: Optional[int] = None
     postId: int
     name: str
     mood: bool

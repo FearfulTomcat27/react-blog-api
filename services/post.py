@@ -25,8 +25,22 @@ def create_post(db: Session, post: schemas.Post):
     return post.id
 
 
+
 def delete_post(db: Session, post_id: int):
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     db.delete(post)
     db.commit()
     return {"message": "Post deleted successfully"}
+
+
+def update_post(db:Session, post:schemas.Post):
+    post_data = db.query(models.Post).filter(models.Post.id == post.id).first()
+    post_data.title = post.title
+    post_data.content = post.content
+    post_data.date = post.date
+    db.commit()
+    return {"message": "Post updated successfully"}
+
+
+def get_posts_by_content(db:Session, content:str):
+    return db.query(models.Post).filter(models.Post.content.contains(content)).all()

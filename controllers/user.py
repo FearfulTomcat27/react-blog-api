@@ -23,3 +23,8 @@ def login(username: str = Query(None, description="The username to search for"),
           password: str = Query(None, description="The password to search for"),
           db: Session = Depends(get_db)):
     return crud.login(db, username, password)
+
+
+@router.get('/user/{id}')
+def find_user_by_id(id: int, db: Session = Depends(get_db)):
+    return crud.get_user_by_id(db, id)

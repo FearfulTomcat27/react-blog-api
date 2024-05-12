@@ -1,28 +1,23 @@
-FROM mysql:latest
-
-# 设置环境变量
-ENV MYSQL_ROOT_PASSWORD=123456\
-    MYSQL_DATABASE=blog
-
-COPY db.sql /docker-entrypoint-initdb.d/
-
-
-
 # 使用mysql镜像
-#FROM python:3.9-slim
-#
-## 设置工作目录
-#WORKDIR /app
-#
-#RUN apt-get update && apt-get install -y git
-#
-## 拉取 FastAPI 项目代码
-#RUN git clone https://github.com/fearfultomcat27/react-blog-api .
-#
-#RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
-#
-#
-#COPY db.sql /docker-entrypoint-initdb.d/
-#
-## 设置启动命令
-#CMD ["sh", "-c", "python3 -m uvicorn main:app --host 0.0.0.0 --port 8000"]
+FROM python:3.9-slim
+
+# 设置镜像名
+LABEL maintainer="blog-api"
+
+# 设置工作目录
+WORKDIR /app
+
+ENV PROJECT_URL="https://github.com/fearfultomcat27/react-blog-api"
+ENV SERVER_HOST=0.0.0.0
+ENV SERVER_PORT=8000
+
+# 拉取 FastAPI 项目代码
+RUN apt update \
+    && apt install -y git \
+    && apt clean \
+    && git clone $PROJECT_URL .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 设置启动命令
+CMD ["sh", "-c", "uvicorn main:app --host $SERVER_HOST --port $SERVER_PORT --reload"]
